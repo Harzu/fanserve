@@ -1,0 +1,10 @@
+[package]
+name = "fanserve"
+version = "0.1.0"
+authors = ["Ilya fanyShu <dev@ilya.com>"]
+
+[dependencies]
+clap = "2.32.0"
+actix = "0.7.4"
+actix-web = "0.7.4"
+env_logger = "0.5.13"
