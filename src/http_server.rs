@@ -5,13 +5,13 @@ use types::ServerConfig;
 use actix;
 use env_logger;
 
-pub fn create_server(config: ServerConfig) {
+pub fn create_server (config: ServerConfig) {
   ::std::env::set_var("RUST_LOG", "actix_web=info");
   ::std::env::set_var("RUST_BACKTRACE", "1");
   env_logger::init();
 
   let sys = actix::System::new("fanserve");
-
+  let protocol = config.protocol.clone();
   let server_address = format!(
     "{host}:{port}",
     port = &config.port,
@@ -31,6 +31,6 @@ pub fn create_server(config: ServerConfig) {
   .bind(&server_address).unwrap()
   .start();
 
-  println!("Server start for http://{}", server_address);
+  println!("Server start for {}://{}", protocol, server_address);
   let _ = sys.run();
 }

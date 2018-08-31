@@ -1,3 +1,5 @@
+#[macro_use]
+extern crate lazy_static;
 extern crate clap;
 extern crate actix;
 extern crate actix_web;
@@ -36,7 +38,7 @@ fn main() {
             let host = _http.value_of("host").unwrap_or("127.0.0.1");
             let directory = _http.value_of("directory").unwrap_or("./");
 
-            let server_config = ServerConfig::new(host, port, "http", directory);
+            let server_config:ServerConfig = ServerConfig::new(host, port, "http", directory);
             
             create_server(server_config);
         },
