@@ -1,4 +1,4 @@
-#[macro_use]
+#[warn(unused_imports)]
 extern crate lazy_static;
 extern crate clap;
 extern crate actix;

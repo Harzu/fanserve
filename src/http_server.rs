@@ -1,17 +1,20 @@
 #![allow(unused_variables)]
-
-use actix_web::{fs, middleware, server, App};
+use std::fs::File;
+use actix_web::{fs, middleware, server, App,};
 use types::ServerConfig;
 use actix;
-use env_logger;
+
+fn get_index(path: &str) -> bool {
+  match File::open(format!("{}/index.html", path)) {
+    Ok(file) => true,
+    Err(err) => false
+  }
+}
 
 pub fn create_server (config: ServerConfig) {
-  ::std::env::set_var("RUST_LOG", "actix_web=info");
-  ::std::env::set_var("RUST_BACKTRACE", "1");
-  env_logger::init();
-
   let sys = actix::System::new("fanserve");
   let protocol = config.protocol.clone();
+  let static_path = config.path_static.clone();
   let server_address = format!(
     "{host}:{port}",
     port = &config.port,
@@ -23,9 +26,13 @@ pub fn create_server (config: ServerConfig) {
         .middleware(middleware::Logger::default())
         .handler(
           r"/",
-          fs::StaticFiles::new(format!("{}", &config.path_static))
-            .unwrap()
-            .show_files_listing()
+          if get_index(&static_path) {
+            fs::StaticFiles::new(&static_path).unwrap()
+              .index_file("index.html")
+          } else {
+            fs::StaticFiles::new(&static_path).unwrap()
+              .show_files_listing()
+          }
         )
   })
   .bind(&server_address).unwrap()
